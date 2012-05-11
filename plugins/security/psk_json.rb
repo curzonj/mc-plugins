@@ -18,7 +18,8 @@ module MCollective
 
       # JSON can handle strings just hashes and arrays
       def inbound(data)
-        [ *JSON.parse(data) ].first
+        Log.debug(data.inspect)
+        JSON.parse(data).first
       rescue
         Log.warn("Received invalid json data in message")
 
@@ -26,13 +27,19 @@ module MCollective
       end
 
       def outbound(*obj)
+        Log.debug(obj.inspect)
         JSON.generate(obj)
       end
 
       # Decodes a message by unserializing all the bits etc, it also validates
       # it as valid using the psk etc
       def decodemsg(msg)
-        body = inbound(msg.payload)
+        body = inbound(msg.payload).inject({}) do |options, (key, value)|
+          options[(key.to_sym rescue key) || key] = value
+          options
+        end
+
+        Log.debug(body.inspect)
 
         should_process_msg?(msg, body[:requestid])
 
@@ -59,6 +66,7 @@ module MCollective
       def encoderequest(sender, msg, requestid, filter, target_agent, target_collective, ttl=60)
         serialized = outbound(msg)
         digest = makehash(serialized)
+        Log.debug("#{digest} -- #{serialized}")
 
         req = create_request(requestid, filter, serialized, @initiated_by, target_agent, target_collective, ttl)
         req[:hash] = digest
@@ -70,6 +78,7 @@ module MCollective
       # should not have been deserialized already
       def validrequest?(req)
         digest = makehash(req[:body])
+        Log.debug("#{req[:hash]}/#{digest} -- #{req[:body]}")
 
         if digest == req[:hash]
           @stats.validated
