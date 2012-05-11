@@ -19,6 +19,10 @@ module MCollective
       # JSON can handle strings just hashes and arrays
       def inbound(data)
         [ *JSON.parse(data) ].first
+      rescue
+        Log.warn("Received invalid json data in message")
+
+        {}
       end
 
       def outbound(*obj)
