@@ -11,6 +11,10 @@ module MCollective
       action "node_json" do
         reply.data = File.read("/var/tmp/chef_node.json")
       end
+
+      action "deploy" do
+        system "chef-deploy &"
+      end
     end
   end
 end
