@@ -1,8 +1,9 @@
 module MCollective
   module Agent
-    class Chef<RPC::Agent
+    class Mysql<RPC::Agent
       action "backup" do
-        reply.data = `/usr/local/sbin/mysql_backup.sh`
+        script = '/usr/local/sbin/mysql_backup.sh'
+        reply.data = `#{script}` if File.executable?(script)
       end
     end
   end
