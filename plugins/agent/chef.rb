@@ -13,7 +13,7 @@ module MCollective
       end
 
       action "deploy" do
-        system "chef-deploy &"
+        reply[:status] = run("chef-deploy", :stdout => :out, :stderr => :err)
       end
     end
   end
