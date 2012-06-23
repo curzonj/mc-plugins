@@ -38,6 +38,11 @@ class MCollective::Application::Ssh < MCollective::Application
 
     ip = if addresses.size == 1
       addresses.values.first
+    elsif addresses.empty?
+      # Mcollective will print it's own message about not
+      # matching any hosts (without a newline)
+      puts
+      exit!
     else
       hostname = pick(addresses)
       addresses[hostname]
