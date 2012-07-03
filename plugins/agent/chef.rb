@@ -21,7 +21,7 @@ module MCollective
       end
 
       action "deploy" do
-        reply[:status] = run("chef-deploy", :stdout => :out, :stderr => :err)
+        reply[:status] = run("/usr/local/sbin/chef-deploy", :stdout => :out, :stderr => :err)
       end
     end
   end
