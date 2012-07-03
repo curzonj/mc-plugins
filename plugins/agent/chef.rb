@@ -21,7 +21,13 @@ module MCollective
       end
 
       action "deploy" do
-        reply[:status] = run("/usr/local/sbin/chef-deploy", :stdout => :out, :stderr => :err)
+        exit_code = run("/usr/local/sbin/chef-deploy")
+
+        if exit_code != 0
+          reply.fail "Deploy failed with code #{exit_code}"
+        else
+          reply[:status] = 0
+        end
       end
     end
   end
