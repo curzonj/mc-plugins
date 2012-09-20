@@ -11,7 +11,7 @@ action "node_json", :description => "" do
 
   output :data,
     :description => "Raw JSON from the last chef run",
-    :display_as  => "JSON",
+    :display_as  => "JSON"
 end
 
 action "deploy", :description => "" do
